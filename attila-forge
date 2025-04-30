@@ -1,0 +1,65 @@
+#!/bin/bash
+
+steam_path="/mnt/30B4A4E9B4A4B2B0/SteamLibrary"
+workshop_dir="${steam_path}/steamapps/workshop/content/325610"
+gamedata_dir="${steam_path}/steamapps/common/Total War Attila/data"
+scripts_dir="${HOME}/.Creative Assembly/Attila/scripts"
+preferences_script_path="${scripts_dir}/preferences.script.txt"
+
+packfile_prefix="mod."
+default_save_name="modded_preferences.script.txt"
+
+if [ $# -eq 0 -o "$1" = "-h" -o "$1" = "--help" ]; then
+  echo "Usage:"
+  echo "$0 <packfile1> ..."
+  echo "$0 {-l|--load} [filename]"
+  echo "$0 {-h|--help}"
+  exit 1
+fi
+
+# Load saved preferences script
+if [ "$1" = "-l" -o "$1" = "--load" ]; then
+  save_path=$default_save_name
+  if [ $# -gt 1 ]; then
+    save_path=$2
+  fi
+  save_path="$scripts_dir/$save_path"
+  if [ ! -f "$save_path" ]; then
+    echo "Error: preferences script not found." >&2 # TODO: error handling func (?)
+    exit 2
+  fi
+  cp -bf "$save_path" "$preferences_script_path"
+  echo "Loaded preferences script."
+  exit 0
+fi
+
+# Copy .pack files and update preferences script
+for arg in "$@"; do
+  packfile_path=$(find "$workshop_dir" -maxdepth 2 \( -name "${arg}" -o -name "${arg}.pack" \) -print -quit )
+  if [ -z $packfile_path ]; then
+    echo "Mod '$arg' not found. Skipping."
+    continue
+  fi
+  packfile_basename=$(basename "$packfile_path")
+  echo -n "$packfile_basename : Found"
+  packfile_basename="${packfile_prefix}${packfile_basename}"
+  if [ -f "${gamedata_dir}/${packfile_basename}" ]; then
+    echo -n ", Already Copied"
+  else
+    cp "$packfile_path" "$gamedata_dir/${packfile_basename}"
+    echo -n ", Copied"
+  fi
+  if grep -q "$packfile_basename" "$preferences_script_path"; then
+    echo ", Already in Script"
+  else
+    echo "mod ${packfile_basename};" >> "$preferences_script_path"
+    echo ", Script Updated"
+ fi
+done
+
+# Save preferences script (with mod list)
+read -p "By default, the game overwrites the preferences script whenever its closed. Do you want to save it to a file? (Y/N) " confirm && [[ $confirm == [yY] ]] || exit 0
+read -p "Enter the new filename [${default_save_name}]: " save_name && [[ -z $save_name ]] && save_name=$default_save_name
+cp -i "$preferences_script_path" "${scripts_dir}/${save_name}"
+
+exit 0
