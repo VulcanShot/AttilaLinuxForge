@@ -16,6 +16,7 @@ A lightweight script for managing mods in Total War: Attila on Linux.
    git clone https://github.com/VulcanShot/AttilaLinuxForge.git
    cd AttilaLinuxForge
    ```
+   Make sure that `steam_path` points to your Steam folder!
 2. Make the script executable:
    ```sh
    chmod +x attila-forge.sh

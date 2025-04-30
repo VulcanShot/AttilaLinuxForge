@@ -1,6 +1,6 @@
 #!/bin/bash
 
-steam_path="/mnt/30B4A4E9B4A4B2B0/SteamLibrary"
+steam_path="${HOME}/.steam/steam/"
 workshop_dir="${steam_path}/steamapps/workshop/content/325610"
 gamedata_dir="${steam_path}/steamapps/common/Total War Attila/data"
 scripts_dir="${HOME}/.Creative Assembly/Attila/scripts"
