@@ -1,20 +1,47 @@
 #!/bin/bash
 
-steam_path="${HOME}/.steam/steam/"
-workshop_dir="${steam_path}/steamapps/workshop/content/325610"
-gamedata_dir="${steam_path}/steamapps/common/Total War Attila/data"
+steam_dir="${HOME}/.steam/steam/"
+workshop_dir="${steam_dir}/steamapps/workshop/content/325610"
+gamedata_dir="${steam_dir}/steamapps/common/Total War Attila/data"
 scripts_dir="${HOME}/.Creative Assembly/Attila/scripts"
 preferences_script_path="${scripts_dir}/preferences.script.txt"
 
 packfile_prefix="mod."
 default_save_name="modded_preferences.script.txt"
 
+e_missing_arg=2
+e_file_not_found=3
+
+error_exit() {
+    echo "Error: $2" >&2
+    exit $1
+}
+
+# Help message
 if [ $# -eq 0 -o "$1" = "-h" -o "$1" = "--help" ]; then
-  echo "Usage:"
-  echo "$0 <packfile1> ..."
-  echo "$0 {-l|--load} [filename]"
-  echo "$0 {-h|--help}"
-  exit 1
+  echo "Welcome to AttilaForge by Vulcan. Usage:"
+  echo "$0 [OPTIONS] [<packfile> ...]"
+  echo
+  echo "Options:"
+  echo -e "    -r, --run"
+  echo    "        Runs the game at the end of execution. Must be the first option, otherwise ignored."
+  echo -e "    -o, --output [filename]"
+  echo    "        The game overwrites the preferences script on exit by default. Save the script after appending mods. If filename is not included, defaults to ${default_save_name}."
+  echo -e "    -l, --load [filename]"
+  echo    "        Copies the specified filename to the preferences script file. Asks for permission to overwrite. If filename is not included, defaults to ${default_save_name}."
+  echo -e "    -h, --help"
+  echo    "        Displays this help message."
+  exit 0
+fi
+
+# Run game executable
+# TODO: Support launch options for the game
+if [ "$1" = "-r" -o "$1" = "--run" ]; then
+  program_path=$0
+  shift 1
+  "$program_path" $*
+  steam steam://run/325610
+  exit 0
 fi
 
 # Load saved preferences script
@@ -25,18 +52,27 @@ if [ "$1" = "-l" -o "$1" = "--load" ]; then
   fi
   save_path="$scripts_dir/$save_path"
   if [ ! -f "$save_path" ]; then
-    echo "Error: preferences script not found." >&2 # TODO: error handling func (?)
-    exit 2
+    error_exit 3 "preferences script not found at $save_path"
   fi
   cp -bf "$save_path" "$preferences_script_path"
   echo "Loaded preferences script."
   exit 0
 fi
 
+# Save preferences script
+if [ "$1" = "-o" -o "$1" = "--output" ]; then
+  save_name=$default_save_name
+  if [ $# -gt 1 ]; then
+    save_name=$2
+    shift
+  fi
+  shift
+fi
+
 # Copy .pack files and update preferences script
 for arg in "$@"; do
-  packfile_path=$(find "$workshop_dir" -maxdepth 2 \( -name "${arg}" -o -name "${arg}.pack" \) -print -quit )
-  if [ -z $packfile_path ]; then
+  packfile_path=$(find "$workshop_dir" -maxdepth 2 \( -name "$arg" -o -name "${arg}.pack" \) -print -quit )
+  if [ -z "$packfile_path" ]; then
     echo "Mod '$arg' not found. Skipping."
     continue
   fi
@@ -54,12 +90,13 @@ for arg in "$@"; do
   else
     echo "mod ${packfile_basename};" >> "$preferences_script_path"
     echo ", Script Updated"
- fi
+  fi
 done
 
-# Save preferences script (with mod list)
-read -p "By default, the game overwrites the preferences script whenever its closed. Do you want to save it to a file? (Y/N) " confirm && [[ $confirm == [yY] ]] || exit 0
-read -p "Enter the new filename [${default_save_name}]: " save_name && [[ -z $save_name ]] && save_name=$default_save_name
-cp -i "$preferences_script_path" "${scripts_dir}/${save_name}"
+# Save backup if option was set
+if [ -n "$save_name" ]; then
+  cp -i "$preferences_script_path" "${scripts_dir}/${save_name}"
+  echo "Saved the preference script."
+fi
 
 exit 0
