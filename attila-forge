@@ -60,7 +60,7 @@ if [ "$1" = "-l" -o "$1" = "--load" ]; then
 fi
 
 # Save preferences script
-if [ "$1" == "-o*" -o "$1" == "--output*" ]; then
+if [[ "$1" == -o* || "$1" == --output* ]]; then
   if grep -Eq "=.+$" <<< "$1"; then
     save_name=${1#*=}
   else
