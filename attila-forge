@@ -69,6 +69,9 @@ if [ "$1" = "-o" -o "$1" = "--output" ]; then
   shift
 fi
 
+# Remove existing mods from preferences script
+sed -i 's/mod .*//g' "$preferences_script_path"
+
 # Copy .pack files and update preferences script
 for arg in "$@"; do
   packfile_path=$(find "$workshop_dir" -maxdepth 2 \( -name "$arg" -o -name "${arg}.pack" \) -print -quit )
