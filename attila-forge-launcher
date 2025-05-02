@@ -33,6 +33,7 @@ run_game() {
 }
 
 echo "Beggining execution." > "$logfile_path"
+shift # Ignore %command%
 
 # Checking for `steam_appid.txt`
 if [ ! -f "$appid_path" ] || ! grep -q "^$appid$" "$appid_path"; then
