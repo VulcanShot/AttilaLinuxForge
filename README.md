@@ -1,6 +1,6 @@
 # AttilaLinuxForge
 
-A lightweight script for managing mods in Total War: Attila on Linux.
+A lightweight solution for modding Total War: Attila on Linux.
 
 ## Features
 
@@ -15,14 +15,24 @@ A lightweight script for managing mods in Total War: Attila on Linux.
 - `basename`
 - `steam`
 
+## Variants
+
+There are three variants of **Attila Linux Forge**:
+
+- [attila-forge](./attila-forge): To be used from the terminal.
+- [attila-forge-launcher](./attila-forge-launcher): To be automatically launched by Steam.
+
 ## Installation
 
-1. Clone the repository:
-   ```sh
+If you wish to install both variants, you could clone the repository instead of downloading them individually.
+```sh
    git clone https://github.com/VulcanShot/AttilaLinuxForge.git
    cd AttilaLinuxForge
-   ```
-   Make sure that `steam_path` points to your Steam folder!
+```
+
+### attila-forge 
+
+1. Download the [script](./attila-forge). Make sure that `steam_path` points to your Steam folder.
 2. Make the script executable:
    ```sh
    chmod +x attila-forge
@@ -32,15 +42,38 @@ A lightweight script for managing mods in Total War: Attila on Linux.
    sudo mv attila-forge /usr/local/bin/attila-forge
    ```
 
+### attila-forge-launcher
+
+1. Download the [script](./attila-forge-launcher).
+2. Install `libopenal1`. Honestly, I do not know why this is required to launch the executable.
+   ```sh
+   sudo apt install libopenal1
+   ```
+3. Make the script executable:
+   ```sh
+   chmod +x attila-forge-launcher
+   ```
+4. Place the script in Attila's folder.
+   ```sh
+   mv attila-forge-launcher {steam-directory}/steamapps/common/Total\ War\ Attila/
+   ```
+5. Set the game's launch options to the following (see [usage](##usage)):
+```
+   ./attila-forge-launcher [OPTIONS] [<packfile> ...]
+```
+The script does not support passing launch options to the game itself since I do not think Attila has any. If you do need to do that then feel free to raise an issue or send a pull request :).
+
 ## Usage
 
-### 1. Adding Mods
+Both variants work exactly the same except `attila-forge-launcher` always launches the game. 
+
+### Adding Mods
 ```sh
 ./attila-forge mod1.pack mod2.pack mod3.pack
 ./attila-forge mod1 mod2 mod3
 ```
 
-### 2. Saving Mod Configurations
+### Saving Mod Configurations
 By default, Total War: Attila overwrites the preferences script on exit. If no save file is provided, the default file name is modded_preferences.script.txt
 ```sh
 ./attila-forge -o mk1212.script.txt mk1212base.pack mk1212models.pack ...
@@ -48,14 +81,14 @@ By default, Total War: Attila overwrites the preferences script on exit. If no s
 ```
 Note: The script saves the `preferences.script.txt`, so if you change your configurations you would have to copy them over to your saved files.
 
-### 3. Loading Mod Configurations
+### Loading Mod Configurations
 The specified file (or the default) is copied over to `preferences.script.txt`. The latter is backed up with suffix '~'.
 ```sh
 ./attila-forge -l
 ./attila-forge --load mk1212.script.txt
 ```
 
-### 4. Running the Game
+### Running the Game
 ```sh
 ./attila-forge -r ...
 ./attila-forge --run ...
