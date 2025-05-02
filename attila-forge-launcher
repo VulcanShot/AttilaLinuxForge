@@ -19,7 +19,7 @@ e_missing_arg=20
 e_file_not_found=30
 
 log_debug() {
-  echo "$1" >> "${logfile_path}"
+  echo "$@" >> "${logfile_path}"
 }
 
 error_exit() {
@@ -52,11 +52,11 @@ if [ "$1" = "-l" -o "$1" = "--load" ]; then
     error_exit 3 "preferences script not found at $save_path"
   fi
   cp -bf "$save_path" "$preferences_script_path"
-  echo "Loaded preferences script."
+  log_debug "Loaded preferences script."
   run_game
 fi
 
-# Remove existing mods from preferences script
+# Remove existing mods from preferences script.
 sed -i 's/mod .*;//g' "$preferences_script_path"
 
 # Save preferences script
@@ -73,30 +73,30 @@ fi
 for arg in "$@"; do
   packfile_path=$(find "$workshop_dir" -maxdepth 2 \( -name "$arg" -o -name "${arg}.pack" \) -print -quit 2> /dev/null )
   if [ -z "$packfile_path" ]; then
-    echo "Mod '$arg' not found. Skipping."
+    log_debug "Mod '$arg' not found. Skipping."
     continue
   fi
   packfile_basename=$(basename "$packfile_path")
-  echo -n "$packfile_basename : Found"
+  log_debug -n "$packfile_basename : Found"
   packfile_basename="${packfile_prefix}${packfile_basename}"
   if [ -f "${gamedata_dir}/${packfile_basename}" ]; then
-    echo -n ", Already Copied"
+    log_debug -n ", Already Copied"
   else
     cp "$packfile_path" "$gamedata_dir/${packfile_basename}"
-    echo -n ", Copied"
+    log_debug -n ", Copied"
   fi
   if grep -q "$packfile_basename" "$preferences_script_path"; then
-    echo ", Already in Script"
+    log_debug ", Already in Script"
   else
     echo "mod ${packfile_basename};" >> "$preferences_script_path"
-    echo ", Script Updated"
+    log_debug ", Script Updated"
   fi
 done
 
 # Save backup if option was set
 if [ -n "$save_name" ]; then
   cp -i "$preferences_script_path" "${scripts_dir}/${save_name}"
-  echo "Saved the preference script."
+  log_debug "Saved the preference script."
 fi
 
 run_game
