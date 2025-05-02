@@ -59,11 +59,11 @@ fi
 sed -i 's/mod .*;//g' "$preferences_script_path"
 
 # Save preferences script
-if [ "$1" = "-o" -o "$1" = "--output" ]; then
-  save_name=$default_save_name
-  if [ $# -gt 1 ]; then
-    save_name=$2
-    shift
+if [ "$1" == "-o*" -o "$1" == "--output*" ]; then
+  if grep -Eq "=.+$" <<< "$1"; then
+    save_name=${1#*=}
+  else
+    save_name=$default_save_name
   fi
   shift
 fi
