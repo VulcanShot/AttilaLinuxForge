@@ -41,16 +41,17 @@ A lightweight script for managing mods in Total War: Attila on Linux.
 ```
 
 ### 2. Saving Mod Configurations
-By default, Total War: Attila overwrites the preferences script on exit.
+By default, Total War: Attila overwrites the preferences script on exit. If no save file is provided, the default file name is modded_preferences.script.txt
 ```sh
 ./attila-forge -o mk1212.script.txt mk1212base.pack mk1212models.pack ...
-./attila-forge --output mk1212.script.txt mk1212base.pack mk1212models.pack ...
+./attila-forge --output mk1212base.pack mk1212models.pack ...
 ```
 Note: The script saves the `preferences.script.txt`, so if you change your configurations you would have to copy them over to your saved files.
 
 ### 3. Loading Mod Configurations
+The specified file (or the default) is copied over to `preferences.script.txt`. The latter is backed up with suffix '~'.
 ```sh
-./attila-forge -l mk1212.script.txt
+./attila-forge -l
 ./attila-forge --load mk1212.script.txt
 ```
 
