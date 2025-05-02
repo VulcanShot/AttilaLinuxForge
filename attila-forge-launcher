@@ -56,8 +56,9 @@ if [ "$1" = "-l" -o "$1" = "--load" ]; then
   run_game
 fi
 
-# Remove existing mods from preferences script.
+# Remove existing mods from preferences script. Can't remove lines directly because the file is written with ^M control chars (made for Windows I guess)
 sed -i 's/mod .*;//g' "$preferences_script_path"
+sed -i '/^$/d' "$preferences_script_path"
 
 # Save preferences script
 if [ "$1" == "-o*" -o "$1" == "--output*" ]; then
