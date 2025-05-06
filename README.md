@@ -58,9 +58,9 @@ If you wish to install both variants, you could clone the repository instead of 
    mv attila-forge-launcher {steam-directory}/steamapps/common/Total\ War\ Attila/
    ```
 5. Set the game's launch options to the following (see [usage](##usage)):
-```
+   ```
    ./attila-forge-launcher "%command%" [OPTIONS] [<packfile> ...]
-```
+   ```
 The script does not support passing launch options to the game itself since I do not think Attila has any. If you do need to do that then feel free to raise an issue or send a pull request :).
 
 ## Usage
