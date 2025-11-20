@@ -13,11 +13,11 @@ A lightweight solution for modding Total War: Attila on Linux.
 
 - `find`
 - `basename`
-- `steam`
+- `steam` (already installed if you have Steam)
 
 ## Variants
 
-There are three variants of **Attila Linux Forge**:
+There are two variants of **Attila Linux Forge**:
 
 - [attila-forge](./attila-forge): To be used from the terminal.
 - [attila-forge-launcher](./attila-forge-launcher): To be automatically launched by Steam.
@@ -32,7 +32,7 @@ If you wish to install both variants, you could clone the repository instead of 
 
 ### attila-forge 
 
-1. Download the [script](./attila-forge). Make sure that `steam_path` points to your Steam folder.
+1. Download the [script](./attila-forge). Make sure that the `steam_path` variable points to your Steam folder.
 2. Make the script executable:
    ```sh
    chmod +x attila-forge
@@ -61,7 +61,7 @@ If you wish to install both variants, you could clone the repository instead of 
    ```
    ./attila-forge-launcher "%command%" [OPTIONS] [<packfile> ...]
    ```
-The script does not support passing launch options to the game itself since I do not think Attila has any. If you do need to do that then feel free to raise an issue or send a pull request :).
+The script does not support passing launch options to the game itself since I do not think Attila has any. If you do need to do that then feel free to raise an issue or send a pull request :)
 
 ## Usage
 
